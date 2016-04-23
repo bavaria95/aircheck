@@ -222,4 +222,28 @@ def get_problem_name(problem_id):
     return c.execute("SELECT name FROM Problem WHERE id=?",(problem_id, )).fetchone()
 
 
+def add_sensor_data(d):
+    try:
+        data = (float(d['latitude']), float(d['longitude']), float(d['temperature']),
+                float(d['humidity']), float(d['airpressure']), int(d['timestamp']))
+        # data = (d['latitude'], d['longitude'], d['temperature'],
+        #         d['humidity'], d['airpressure'], d['timestamp'])
+    except:
+        return {"success": False, "message": "Form data missing or incorrect type."}
+
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    try:
+        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data)
+        db.commit()
+    except:
+        return {"success": False, "message": "Something went wrong."}
+
+    return {"success": True, "message": "Successfully added a new sensor measurement."}
+
+
 

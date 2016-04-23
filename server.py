@@ -40,6 +40,11 @@ def change_password():
     params = request.json
     return json.dumps(database_helper.change_password(params))
 
+@app.route("/sensor", methods=["POST"])
+def sensor():
+    params = request.form
+    return json.dumps(database_helper.add_sensor_data(params))
+
 
 @app.route("/test", methods=["GET"])
 def test():

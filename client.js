@@ -48,36 +48,9 @@ define_onclick_functions = function() {
         activate_browse();
     }
 
-    var send_button_home = document.getElementById("status-send-home");
-    send_button_home.onclick = function() {
-        send_button('home');
-    }
-
-    var send_button_browse = document.getElementById("status-send-browse");
-    send_button_browse.onclick = function() {
-        send_button('browse');
-    }
-
-
-    var refresh_button_home = document.getElementById("wall-refresh-home");
-    refresh_button_home.onclick = function() {
-        refresh_wall('home');
-    }
-
-    var refresh_button_browse = document.getElementById("wall-refresh-browse");
-    refresh_button_home.onclick = function() {
-        refresh_wall('browse', get_user_info().email);
-    }
-
-
     var signout_button = document.getElementById("sign-out");
     signout_button.onclick = function() {
         signout();
-    }
-
-    var search_button = document.getElementById("search-send");
-    search_button.onclick = function() {
-        search_method();
     }
 }
 
@@ -155,7 +128,7 @@ signup = function() {
     };
 
     // TODO password hash!
-    
+
     if (check_reg_correctness()) {
         func = function(resp) {
         	if (!resp.success) 
@@ -174,84 +147,6 @@ signout = function() {
 
     localStorage.removeItem('token');
     display_view('welcomeview');
-}
-
-search_method = function() {
-    var email = document.getElementById("search-field").value;
-    
-    func = function(resp) {
-        if (!resp.success) 
-            display_error_search(resp.message)
-        else 
-            show_profile(resp.data);
-    }
-
-    ajax_call("GET", "/get_user_data_by_email?token="+get_token()+"&email="+email,
-                func);
-}
-
-send_button = function(where) {
-        var msg = document.getElementById("status-field-" + where).value;
-        var token = get_token();
-
-        if (where == 'home')
-            var email = get_user_info().email;
-        else if (where == 'browse')
-            var email = document.getElementById("search-field").value;
-
-        var data = {'token': token, 'message': msg, 'email': email};
-
-        func = function(resp) {
-            if (resp.success) {
-                document.getElementById("status-field-" + where).value = '';
-                refresh_wall(where, email);
-            }
-        }
-
-        ajax_call("POST", "/post_message", func, data);
-    }
-
-
-refresh_wall = function(which, email) {
-
-    func = function(resp) {
-        if (resp.success) {
-            document.getElementById("wall-list" + '-' + which).innerHTML = ''
-
-            var messages = resp.data;
-
-            for (var msg of messages)
-                append_message_li(which, msg);
-            
-            if (messages.length > 8)
-                prolonging_content(which);
-        }
-    }
-    
-    if (which == 'home')
-        ajax_call("POST", "/get_user_messages_by_token", func, {'token': get_token()});
-    else if (which == 'browse')
-        ajax_call("POST", "/get_user_messages_by_email", func, 
-                  {'email': email, 'token': get_token()});
-}
-
-append_message_li = function(which_wall, msg) {
-    var newLi = document.createElement("li");
-    var text = document.createTextNode('"' + msg.content + '" from ' + msg.writer);
-
-    newLi.appendChild(text);
-    var ulnew = document.getElementById("wall-list-" + which_wall);
-    ulnew.appendChild(newLi); 
-}
-prolonging_content = function(where) {
-    var att = document.createAttribute("style");
-    att.value = "height: " + (300 + parseInt(window.getComputedStyle(document.getElementById("wall-" + where)).height)).toString() + "px;";
-    document.getElementById("content").setAttributeNode(att);
-}
-reset_content_height = function() {
-    var att = document.createAttribute("style");
-    att.value = "height: 550px";
-    document.getElementById("content").setAttributeNode(att);
 }
 
 get_token = function() {
@@ -307,7 +202,6 @@ activate_account = function() {
     document.getElementById('home-view').style = "display: none;";
     document.getElementById('browse-view').style = "display: none;";
     highlight_label('account');
-    reset_content_height();
 }
 
 
@@ -317,7 +211,6 @@ activate_home = function() {
     document.getElementById('browse-view').style = "display: none;";
     highlight_label('home');
 
-    reset_content_height();
     fill_user_info_fields('home', get_user_info());
     refresh_wall('home');
 }
@@ -343,7 +236,6 @@ activate_browse = function() {
     document.getElementById('search-error').innerHTML = '';
     document.getElementById('search-field').value = '';
 
-    reset_content_height();
 }
 
 
@@ -388,10 +280,7 @@ change_password = function() {
 display_error_msg_change = function(msg) {
     document.getElementById("change-error").innerHTML = msg;
 }
-
-display_error_search = function(msg) {
-    document.getElementById("search-error").innerHTML = msg;
-}
+c
 
 show_profile = function(data) {
     document.getElementById('search-content').style = "display: none;";
