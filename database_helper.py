@@ -16,5 +16,15 @@ class User(db.Model):
     email = db.Column(db.String, unique=True)
     password = db.Column(db.String, nullable=False)
 
+class Symptom(db.Model):
+    __tablename__ = 'Symptom'
+    id = db.Column(db.Integer,primary_key=True, unique=True, index=True, autoincrement=True)
+    name = db.Column(db.String, unique=True)
+
+class AreaType(db.Model):
+    id = db.Column(db.Integer,primary_key=True, unique=True, index=True, autoincrement=True)
+    name = db.Column(db.String, unique=True)
+
+    
 if __name__ == "__main__":
     db.create_all()    
