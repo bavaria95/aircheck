@@ -17,10 +17,12 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
 
 class Problem(db.Model):
-	__tablename__ = 'Problem'
+    __tablename__ = 'Problem'
 
-	id = db.Column(db.Integer, primary_key=True, unique=True, index=True, autoincrement=True)
-	name = db.Column(db.String, unique=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True, index=True, autoincrement=True)
+    name = db.Column(db.String, unique=True)
+
+
 
 if __name__ == "__main__":
     db.create_all()
