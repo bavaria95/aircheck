@@ -261,6 +261,15 @@ def get_all_area_types():
 
     return c.execute("SELECT * FROM TypeOfArea").fetchall()
 
+def get_all_symptoms():
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    return c.execute("SELECT * FROM Symptom").fetchall()
+
 
 
 

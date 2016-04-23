@@ -24,12 +24,6 @@ def sign_in():
     params = request.json
     return json.dumps(database_helper.sign_in_user(params))
 
-@app.route("/symptoms", methods=["POST","GET"])
-@app.route("/symptoms/<int:symptom_id>", methods=["GET"])
-def symptoms(symptom_id=None):
-    if symptom_id:
-        return json.dumps(Symptom.query())
-
 @app.route("/sign_out", methods=["POST"])
 def sign_out():
     params = request.json
@@ -52,6 +46,10 @@ def problems():
 @app.route('/areatypes', methods=['GET'])
 def areatypes():
     return json.dumps(database_helper.get_all_area_types())
+
+@app.route('/symptoms', methods=['GET'])
+def symptoms():
+    return json.dumps(database_helper.get_all_symptoms())
 
 @app.route("/test", methods=["GET"])
 def test():
