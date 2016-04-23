@@ -68,7 +68,7 @@
 					<div id="account-label">Account</div>
 				</div>
 				<div id="home-tab">
-					<div id="home-label">Home</div>
+					<div id="home-label">Symptoms</div>
 				</div>
 				<div id="browse-tab">
 					<div id="browse-label">Browse</div>
@@ -78,6 +78,7 @@
 			<div id="content">
 
 			<div id="account-view" style="display:block;">
+			<button id="sign-out" type="button">Sign out</button>
 			<div id="pwd-change-wrapper">
 					<div id="change-error"></div>
 					<div id="password-change">
@@ -103,23 +104,21 @@
 				<h1>Health problems</h1>
 				
 				<ul id="problems-list"></ul>
-				
+				<h3>Add your health problems</h3>
 				<form id="adding-problems-form" onsubmit="add_problem(); return false;">
 					<div class="line" id="adding-problems"></div>
 					<div class="line">
-						<input type="submit" value="Add" class="form-button">
+						<input type="submit" value="Add" class="form-button" id="add-button">
 					</div>
 				</form>
-				</div>
 			</div>
-
-			<button id="sign-out" type="button">Sign out</button>
+						
 		</div>
 
 
 		<div id="home-view" style="display: none;">
-			<div class="user-info">
-				<h1>User symptoms</h1>
+			<div id="symptoms-group">
+				<center><h1>User symptoms</h1></center>
 				<h1>Symptoms list</h1>
 				<ul id="symptoms-list"></ul>
 
@@ -127,13 +126,13 @@
 				<form id="adding-symptoms-form" onsubmit="add_symptom(); return false;">
 
 					<div class="line">
-						<label>symptom</label><div id="adding-symptoms"></div>
+						<label>Symptom</label><div id="adding-symptoms"></div>
 					</div>
 					<div class="line">
-						<label>timestamp1 </label><input type="time" class="form-field" name="time-start" required>
+						<label>Started</label><input type="time" class="form-field" name="time-start" required>
 					</div>
 					<div class="line">
-						<label>timestamp2 </label><input type="text" class="form-field" name="time-end" required>
+						<label>Ended</label><input type="text" class="form-field" name="time-end" required>
 					</div>
 					<div class="line">
 						<label>latitude </label><input type="text" class="form-field" name="latitude" required>
@@ -149,15 +148,15 @@
 				</form>
 				
 			</div>
-			<div id="demo"></div>
 
 		</div>
 
 
 		<div id="browse-view" style="display: none;">
 
-
-	</div>
+		</div>
+		</div>
+		</div>
 		</script>
 
     </head>  

@@ -149,7 +149,40 @@ label {
     width: 900px;
     height: 550px;
 }
-#content-long {
+
+#problems {
+    float: right;
+    width: 300px;
+    height: 550px;
+    margin-right: 50px;
+    margin-top: 60px;
+}
+
+#problems-list {
+    margin-bottom: 50px;
+}
+
+#add-button {
+    width: 80px;
+    height: 30px;
+    float: right;
+    margin-right: 70px;
+}
+
+#dropdown-problems {
+    width: 100px;
+}
+
+#symptoms-group {
+    margin: 10px;
+    width: 900px;
+    height: 500px;
+}
+
+#adding-symptoms-form {
+    width: 300px;
+}
+/*#content-long {
     border: 1px solid black;
     border-bottom: none;
     margin-left: auto;
@@ -220,7 +253,7 @@ label {
     margin-left: auto;
     margin-right: auto;
     margin-top: 50px;
-}
+}*/
 
 #pwd-change-wrapper {
     float: left;
@@ -244,12 +277,12 @@ label {
 
 #sign-out {
     float: right;
-    margin: 140px;
-    width: 200px;
-    height: 80px;
+    margin: 10px;
+    width: 100px;
+    height: 30px;
 }
 
-#search {
+/*#search {
     width: 400px;
     height: 100px;
     margin-left: auto;
@@ -284,3 +317,4 @@ label {
     width: 200px;
     height: 50px;
 }
+*/

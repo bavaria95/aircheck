@@ -106,7 +106,8 @@ login = function(email, password) {
             localStorage.setItem('token', resp.data);
 
             display_view('profileview');
-            activate_account();
+            // activate_account();
+            activate_home();
         }
     }
 
