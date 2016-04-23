@@ -272,6 +272,7 @@ def get_all_sensor_data():
 
     return c.execute("SELECT * FROM Sensor").fetchall()
 
+
 def get_all_health_problems():
     try:
         db = get_db()

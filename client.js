@@ -52,6 +52,7 @@ define_onclick_functions = function() {
     signout_button.onclick = function() {
         signout();
     }
+
 }
 
 display_view = function(view) {
@@ -202,6 +203,8 @@ activate_account = function() {
     document.getElementById('home-view').style = "display: none;";
     document.getElementById('browse-view').style = "display: none;";
     highlight_label('account');
+
+    get_list_of_problems();
 }
 
 
@@ -210,32 +213,14 @@ activate_home = function() {
     document.getElementById('home-view').style = "display: block;";
     document.getElementById('browse-view').style = "display: none;";
     highlight_label('home');
-
-    fill_user_info_fields('home', get_user_info());
-    refresh_wall('home');
 }
-fill_user_info_fields = function(tab, info) {
 
-    document.getElementById(tab + '-email').innerHTML = info.email;
-    document.getElementById(tab + '-firstname').innerHTML = info.firstname;
-    document.getElementById(tab + '-familyname').innerHTML = info.familyname;
-    document.getElementById(tab + '-gender').innerHTML = info.gender;
-    document.getElementById(tab + '-city').innerHTML = info.city;
-    document.getElementById(tab + '-country').innerHTML = info.country;
-}
 
 activate_browse = function() {
     document.getElementById('account-view').style = "display: none;";
     document.getElementById('home-view').style = "display: none;";
     document.getElementById('browse-view').style = "display: block;";
     highlight_label('browse');
-
-    document.getElementById('profile-unfam').style = "display: none;";
-    document.getElementById('search-content').style = "display: block;";
-
-    document.getElementById('search-error').innerHTML = '';
-    document.getElementById('search-field').value = '';
-
 }
 
 
@@ -274,7 +259,35 @@ change_password = function() {
     }
 
     ajax_call("POST", "/change_password", func, data);
+}
 
+fill_in_all_problems = function(problems) {
+    // var new_div = document.createElement("div");
+
+    var new_select = document.createElement("select");
+    new_select.setAttribute("id", "dropdown-problems");
+    new_select.setAttribute("name", "problem-id");
+
+
+    for (var i = 0; i < problems.length; i++) {
+        var new_option = document.createElement("option");
+        new_option.setAttribute("value", problems[i][0]);
+
+        var text = document.createTextNode(problems[i][1]);
+        new_option.appendChild(text);
+
+        new_select.appendChild(new_option);
+    }
+
+    document.getElementById("adding-problems").appendChild(new_select);
+}
+get_list_of_problems = function() {
+    ajax_call("GET", "/problems", fill_in_all_problems);
+}
+add_problem = function() {
+    var form = document.forms['adding-problems-form'];
+    var problem_id = form['problem-id'].value;
+    console.log(problem_id);
 }
 
 display_error_msg_change = function(msg) {
