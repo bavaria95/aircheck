@@ -52,6 +52,25 @@ def sign_up_user(d):
 
     return {"success": True, "message": "Successfully created a new user."}
 
+def get_user_id_by_email(email):
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    return c.execute("SELECT id FROM User WHERE Email=?", (email,)).fetchone()[0]
+
+def get_user_email_by_id(id):
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    # print(c.execute("SELECT email FROM User WHERE id=?", id).fetchall())
+    return c.execute("SELECT email FROM User WHERE id=?", (id,)).fetchone()[0]
+
 
 def sign_in_user(d):
     data = (d['email'], d['password'])
@@ -65,7 +84,8 @@ def sign_in_user(d):
     c.execute("SELECT COUNT(*) FROM User WHERE Email=? AND Password=?", data)
     if c.fetchone()[0] == 1:
         token = helper.generate_random_token()
-        storage.add_user(token, d['email'])
+        print(get_user_id_by_email(d['email']))
+        storage.add_user(token, get_user_id_by_email(d['email']))
 
         return {"success": True, "message": "Successfully signed in.", "data": token}
 
@@ -86,7 +106,7 @@ def change_password(d):
     old_pass = d['old_password']
     new_pass = d['new_password']
 
-    email = storage.get_user_email(token)
+    email = get_user_email_by_id(storage.get_user_id(token))
 
     if not email:
         return {"success": False, "message": "You are not logged in."}
@@ -108,91 +128,91 @@ def change_password(d):
     
     return {"success": False, "message": "Wrong password."}
 
-def get_user_data_by_email(d):
-    token = d['token']
-    email = d['email']
+# def get_user_data_by_email(d):
+#     token = d['token']
+#     email = d['email']
 
-    if not storage.is_token_presented(token):
-        return {"success": False, "message": "You are not signed in."}
+#     if not storage.is_token_presented(token):
+#         return {"success": False, "message": "You are not signed in."}
 
-    try:
-        db = get_db()
-        c = db.cursor()
-    except:
-        return {"success": False, "message": "Database problems."}
+#     try:
+#         db = get_db()
+#         c = db.cursor()
+#     except:
+#         return {"success": False, "message": "Database problems."}
 
-    c.execute("SELECT * FROM User WHERE Email=?", (email,))
+#     c.execute("SELECT * FROM User WHERE Email=?", (email,))
 
-    match = c.fetchone()
-    if not match:
-        return {"success": False, "message": "No such user."}
+#     match = c.fetchone()
+#     if not match:
+#         return {"success": False, "message": "No such user."}
 
-    data = {'email': match[0], 'firstname': match[2], 'familyname': match[3], 
-            'gender': match[4], 'city': match[5], 'country': match[6]}
+#     data = {'email': match[0], 'firstname': match[2], 'familyname': match[3], 
+#             'gender': match[4], 'city': match[5], 'country': match[6]}
 
-    return {"success": True, "message": "User data retrieved.", "data": data}
+#     return {"success": True, "message": "User data retrieved.", "data": data}
 
-def get_user_data_by_token(d):
-    token = d['token']
+# def get_user_data_by_token(d):
+#     token = d['token']
 
-    email = storage.get_user_email(token)
+#     email = storage.get_user_email(token)
 
-    return get_user_data_by_email({'token': token, 'email': email})
+#     return get_user_data_by_email({'token': token, 'email': email})
 
-def post_message(d):
-    token = d['token']
-    message = d['message']
-    to_email = d['email']
+# def post_message(d):
+#     token = d['token']
+#     message = d['message']
+#     to_email = d['email']
 
-    from_email = storage.get_user_email(token)
-    if not from_email:
-        return {"success": False, "message": "You are not signed in."}
+#     from_email = storage.get_user_email(token)
+#     if not from_email:
+#         return {"success": False, "message": "You are not signed in."}
 
-    try:
-        db = get_db()
-        c = db.cursor()
-    except:
-        return {"success": False, "message": "Database problems."}
+#     try:
+#         db = get_db()
+#         c = db.cursor()
+#     except:
+#         return {"success": False, "message": "Database problems."}
 
-    c.execute("SELECT COUNT(*) FROM User WHERE Email=?", (to_email, ))
-    if c.fetchone()[0] != 1:
-        return {"success": False, "message": "No such user."}
+#     c.execute("SELECT COUNT(*) FROM User WHERE Email=?", (to_email, ))
+#     if c.fetchone()[0] != 1:
+#         return {"success": False, "message": "No such user."}
 
 
-    c.execute('INSERT INTO Message(To_email, From_email, Content) VALUES (?, ?, ?)',
-                                                    (to_email, from_email, message))
-    db.commit()
+#     c.execute('INSERT INTO Message(To_email, From_email, Content) VALUES (?, ?, ?)',
+#                                                     (to_email, from_email, message))
+#     db.commit()
 
-    return {"success": True, "message": "Message posted"}
+#     return {"success": True, "message": "Message posted"}
 
-def get_user_messages_by_email(d):
-    token = d['token']
-    email = d['email']
+# def get_user_messages_by_email(d):
+#     token = d['token']
+#     email = d['email']
 
-    if not storage.get_user_email(token):
-        return {"success": False, "message": "You are not signed in."}
+#     if not storage.get_user_email(token):
+#         return {"success": False, "message": "You are not signed in."}
 
-    try:
-        db = get_db()
-        c = db.cursor()
-    except:
-        return {"success": False, "message": "Database problems."}
+#     try:
+#         db = get_db()
+#         c = db.cursor()
+#     except:
+#         return {"success": False, "message": "Database problems."}
 
-    c.execute("SELECT COUNT(*) FROM User WHERE Email=?", (email, ))
-    if c.fetchone()[0] != 1:
-        return {"success": False, "message": "No such user."}
+#     c.execute("SELECT COUNT(*) FROM User WHERE Email=?", (email, ))
+#     if c.fetchone()[0] != 1:
+#         return {"success": False, "message": "No such user."}
 
-    c.execute("SELECT * FROM Message WHERE To_email=?", (email, ))
-    match = map(lambda x: {'writer': x[2], 'content': x[3]}, c.fetchall())
+#     c.execute("SELECT * FROM Message WHERE To_email=?", (email, ))
+#     match = map(lambda x: {'writer': x[2], 'content': x[3]}, c.fetchall())
 
-    return {"success": True, "message": "User messages retrieved.", "data": match}
+#     return {"success": True, "message": "User messages retrieved.", "data": match}
 
-def get_user_messages_by_token(d):
-    token = d['token']
+# def get_user_messages_by_token(d):
+#     token = d['token']
 
-    email = storage.get_user_email(token)
+#     email = storage.get_user_email(token)
 
-    return get_user_messages_by_email({'token': token, 'email': email})
+#     return get_user_messages_by_email({'token': token, 'email': email})
 
 def get_symptom_name(symptom_id):
     try:

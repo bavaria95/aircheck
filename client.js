@@ -280,11 +280,10 @@ change_password = function() {
 display_error_msg_change = function(msg) {
     document.getElementById("change-error").innerHTML = msg;
 }
-c
+
 
 show_profile = function(data) {
     document.getElementById('search-content').style = "display: none;";
     document.getElementById('profile-unfam').style = "display: block;";
-    fill_user_info_fields('browse', data);
-    refresh_wall('browse', data.email);
+    // fill_user_info_fields('browse', data);
 }

@@ -5,16 +5,16 @@ class Storage():
     def __init__(self):
         self.d = {}
 
-    def add_user(self, token, email):
+    def add_user(self, token, id):
         if token in self.d:
             raise 'Token is used.'
 
-        self.d[token] = email
+        self.d[token] = id
 
     def remove_user(self, token):
         self.d.pop(token, None)
 
-    def get_user_email(self, token):
+    def get_user_id(self, token):
         return self.d.get(token)
 
     def is_token_presented(self, token):
