@@ -244,8 +244,12 @@ def get_problem_name(problem_id):
 
 def add_sensor_data(d):
     try:
-        data = (float(d['latitude']), float(d['longitude']), float(d['temperature']),
-                float(d['humidity']), float(d['airpressure']), int(d['timestamp']))
+        data1 = (float(d['latitude1']), float(d['longitude1']), float(d['temperature1']),
+                float(d['humidity1']), float(d['airpressure1']), int(d['timestamp']))
+        data2 = (float(d['latitude2']), float(d['longitude2']), float(d['temperature2']),
+                float(d['humidity2']), float(d['airpressure2']), data1[-1] + 1)
+        data3 = (float(d['latitude3']), float(d['longitude3']), float(d['temperature3']),
+                float(d['humidity3']), float(d['airpressure3']), data1[-1] + 2)
     except:
         return {"success": False, "message": "Form data missing or incorrect type."}
 
@@ -256,7 +260,9 @@ def add_sensor_data(d):
         return {"success": False, "message": "Database problems."}
 
     try:
-        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data)
+        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data1)
+        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data2)
+        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data3)
         db.commit()
     except:
         return {"success": False, "message": "Something went wrong."}
