@@ -272,6 +272,26 @@ def get_all_sensor_data():
 
     return c.execute("SELECT * FROM Sensor").fetchall()
 
+def add_heath_problem(d):
+    try:
+        data = (storage.get_user_id(d['token']), int(d['problem_id']))
+    except:
+        return {"success": False, "message": "Form data missing or incorrect type."}
+
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    try:
+        c.execute("INSERT INTO UserHasProblems(user, problem) VALUES (?, ?)", data)
+        db.commit()
+    except:
+        return {"success": False, "message": "Something went wrong."}
+
+    return {"success": True, "message": "Successfully added a new health problem for the user."}
+
 
 def get_all_health_problems():
     try:

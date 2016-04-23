@@ -262,7 +262,7 @@ change_password = function() {
 }
 
 fill_in_all_problems = function(problems) {
-    // var new_div = document.createElement("div");
+    document.getElementById("adding-problems").innerHTML = '';
 
     var new_select = document.createElement("select");
     new_select.setAttribute("id", "dropdown-problems");
@@ -287,7 +287,11 @@ get_list_of_problems = function() {
 add_problem = function() {
     var form = document.forms['adding-problems-form'];
     var problem_id = form['problem-id'].value;
-    console.log(problem_id);
+    ajax_call("POST", "/problem", display_user_problems, {'token': get_token(),
+                                                          'problem_id': problem_id});
+}
+display_user_problems = function() {
+
 }
 
 display_error_msg_change = function(msg) {
