@@ -31,6 +31,12 @@ def users(user_id=None):
         params = request.json
         return json.dumps(database_helper.update_user(params, user_id))
 
+@app.route("/symptoms", methods["POST","GET"])
+@app.route("/symptoms/<int:symptom_id>", methods ["GET"])
+def symptoms(symptom_id=None):
+    if symptom_id:
+        return json.dumps(Symptom.query())
+
 
 @app.route("/login", methods=["POST"])
 def login():
