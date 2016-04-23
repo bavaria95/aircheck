@@ -45,11 +45,15 @@ def sensors():
     return json.dumps(database_helper.get_all_sensor_data())
 
 
-@app.route('/problem', methods=['POST'])
+@app.route('/problem', methods=['POST', 'GET'])
 def problem():
-    params = request.json
-    print(params)
-    return json.dumps(database_helper.add_heath_problem(params))
+    if request.method == 'GET':
+        params = request.args
+        return json.dumps(database_helper.get_all_problems_for_user(params))
+
+    if request.method == 'POST':
+        params = request.json
+        return json.dumps(database_helper.add_heath_problem(params))
 
 @app.route('/problems', methods=['GET'])
 def problems():

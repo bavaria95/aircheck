@@ -268,7 +268,6 @@ fill_in_all_problems = function(problems) {
     new_select.setAttribute("id", "dropdown-problems");
     new_select.setAttribute("name", "problem-id");
 
-
     for (var i = 0; i < problems.length; i++) {
         var new_option = document.createElement("option");
         new_option.setAttribute("value", problems[i][0]);
@@ -291,7 +290,22 @@ add_problem = function() {
                                                           'problem_id': problem_id});
 }
 display_user_problems = function() {
+    ajax_call("GET", "/problem?token="+get_token(), fill_in_user_problems);
+}
+fill_in_user_problems = function(problems) {
+    document.getElementById("problems-list").innerHTML = '';
 
+    for (var i = 0; i < problems.length; i++) {
+        var new_li = document.createElement("li");
+        // new_li.setAttribute("value", problems[i][0]);
+
+        var text = document.createTextNode(problems[i][2]);
+        new_li.appendChild(text);
+
+        document.getElementById("problems-list").appendChild(new_li);
+    }
+
+    // document.getElementById("adding-problems").appendChild(new_select);
 }
 
 display_error_msg_change = function(msg) {

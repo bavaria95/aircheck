@@ -292,6 +292,20 @@ def add_heath_problem(d):
 
     return {"success": True, "message": "Successfully added a new health problem for the user."}
 
+def get_all_problems_for_user(d):
+    try:
+        data = (int(storage.get_user_id(d['token'])))
+    except:
+        return {"success": False, "message": "Form data missing or incorrect type."}
+    print(data)
+
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    return c.execute("SELECT * FROM UserHasProblems WHERE user=?", (int(storage.get_user_id(d['token'])),)).fetchall()
 
 def get_all_health_problems():
     try:
