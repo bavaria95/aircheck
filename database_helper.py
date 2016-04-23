@@ -194,3 +194,20 @@ def get_user_messages_by_token(d):
 
     return get_user_messages_by_email({'token': token, 'email': email})
 
+def get_symptom_name(symptom_id):
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+        
+    c.execute("INSERT INTO Symptom(name) VALUES (?)", ("Pnemonia",))
+
+    c.execute("SELECT COUNT(*) FROM Symptom WHERE id=?",(symptom_id, ))
+    if c.fetchone()[0] != 1:
+        return {"success": False, "message": "No such symptom."}
+
+    return c.execute("SELECT name FROM Symptom WHERE id=?",(symptom_id, ))
+
+
+

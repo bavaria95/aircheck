@@ -24,8 +24,8 @@ def sign_in():
     params = request.json
     return json.dumps(database_helper.sign_in_user(params))
 
-@app.route("/symptoms", methods["POST","GET"])
-@app.route("/symptoms/<int:symptom_id>", methods ["GET"])
+@app.route("/symptoms", methods=["POST","GET"])
+@app.route("/symptoms/<int:symptom_id>", methods=["GET"])
 def symptoms(symptom_id=None):
     if symptom_id:
         return json.dumps(Symptom.query())
@@ -52,8 +52,7 @@ def get_user_data_by_token():
 
 @app.route("/test", methods=["GET"])
 def test():
-    params = request.json
-    database_helper._create_database_structure()
+    print database_helper.get_symptom_name(1)
     return '42'
 
 if __name__ == "__main__":
