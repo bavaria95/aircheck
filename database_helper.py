@@ -25,6 +25,12 @@ class AreaType(db.Model):
     id = db.Column(db.Integer,primary_key=True, unique=True, index=True, autoincrement=True)
     name = db.Column(db.String, unique=True)
 
-    
+class Problem(db.Model):
+    __tablename__ = 'Problem'
+
+    id = db.Column(db.Integer, primary_key=True, unique=True, index=True, autoincrement=True)
+    name = db.Column(db.String, unique=True)
+
+
 if __name__ == "__main__":
-    db.create_all()    
+    db.create_all()
