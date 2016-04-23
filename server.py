@@ -40,15 +40,6 @@ def change_password():
     params = request.json
     return json.dumps(database_helper.change_password(params))
 
-@app.route("/get_user_data_by_email", methods=["GET"])
-def get_user_data_by_email():
-    params = request.args
-    return json.dumps(database_helper.get_user_data_by_email(params))
-
-@app.route("/get_user_data_by_token", methods=["GET"])
-def get_user_data_by_token():
-    params = request.args
-    return json.dumps(database_helper.get_user_data_by_token(params))
 
 @app.route("/test", methods=["GET"])
 def test():

@@ -34,7 +34,7 @@ def _create_database_structure():
 
 def sign_up_user(d):
     try:
-        data = (d['email'], d['password'], d['firstname'], d['familyname'], d['gender'], d['city'], d['country'])
+        data = (d['email'], d['password'])
     except:
         return {"success": False, "message": "Form data missing or incorrect type."}
 
@@ -45,7 +45,7 @@ def sign_up_user(d):
         return {"success": False, "message": "Database problems."}
 
     try:
-        c.execute("INSERT INTO User VALUES (?, ?, ?, ?, ?, ?, ?)", data)
+        c.execute("INSERT INTO User(email, password) VALUES (?, ?)", data)
         db.commit()
     except:
         return {"success": False, "message": "User already exists."}
