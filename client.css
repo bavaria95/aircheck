@@ -180,7 +180,15 @@ label {
 }
 
 #adding-symptoms-form {
+    width: 400px;
+}
+
+#mapid {
+    float: right;
+    height: 300px;
     width: 300px;
+    margin-right: 100px;
+    margin-top: -200px;
 }
 /*#content-long {
     border: 1px solid black;
