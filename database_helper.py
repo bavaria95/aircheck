@@ -18,10 +18,13 @@ class User(db.Model):
 
 class Symptom(db.Model):
     __tablename__ = 'Symptom'
+
     id = db.Column(db.Integer,primary_key=True, unique=True, index=True, autoincrement=True)
     name = db.Column(db.String, unique=True)
 
 class AreaType(db.Model):
+    __tablename__ = 'AreaType'
+    
     id = db.Column(db.Integer,primary_key=True, unique=True, index=True, autoincrement=True)
     name = db.Column(db.String, unique=True)
 
