@@ -226,8 +226,6 @@ def add_sensor_data(d):
     try:
         data = (float(d['latitude']), float(d['longitude']), float(d['temperature']),
                 float(d['humidity']), float(d['airpressure']), int(d['timestamp']))
-        # data = (d['latitude'], d['longitude'], d['temperature'],
-        #         d['humidity'], d['airpressure'], d['timestamp'])
     except:
         return {"success": False, "message": "Form data missing or incorrect type."}
 
@@ -244,6 +242,16 @@ def add_sensor_data(d):
         return {"success": False, "message": "Something went wrong."}
 
     return {"success": True, "message": "Successfully added a new sensor measurement."}
+
+def get_all_health_problems():
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    return c.execute("SELECT * FROM Problem").fetchall()
+
 
 
 

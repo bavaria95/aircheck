@@ -45,6 +45,10 @@ def sensor():
     params = request.form
     return json.dumps(database_helper.add_sensor_data(params))
 
+@app.route('/problems', methods=['GET'])
+def problems():
+    return json.dumps(database_helper.get_all_health_problems())
+
 
 @app.route("/test", methods=["GET"])
 def test():
