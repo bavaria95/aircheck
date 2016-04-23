@@ -34,10 +34,16 @@ def change_password():
     params = request.json
     return json.dumps(database_helper.change_password(params))
 
+
 @app.route("/sensor", methods=["POST"])
 def sensor():
     params = request.form
     return json.dumps(database_helper.add_sensor_data(params))
+
+@app.route("/sensors", methods=["GET"])
+def sensors():
+    return json.dumps(database_helper.get_all_sensor_data())
+
 
 @app.route('/problems', methods=['GET'])
 def problems():
@@ -50,6 +56,8 @@ def areatypes():
 @app.route('/symptoms', methods=['GET'])
 def symptoms():
     return json.dumps(database_helper.get_all_symptoms())
+
+
 
 @app.route("/test", methods=["GET"])
 def test():

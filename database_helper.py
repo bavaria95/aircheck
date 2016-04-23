@@ -263,6 +263,15 @@ def add_sensor_data(d):
 
     return {"success": True, "message": "Successfully added a new sensor measurement."}
 
+def get_all_sensor_data():
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    return c.execute("SELECT * FROM Sensor").fetchall()
+
 def get_all_health_problems():
     try:
         db = get_db()
