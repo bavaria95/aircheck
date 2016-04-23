@@ -52,7 +52,7 @@ def get_user_data_by_token():
 
 @app.route("/test", methods=["GET"])
 def test():
-    print database_helper.get_symptom_name(1)
+    print database_helper.get_problem_name(1)
     return '42'
 
 if __name__ == "__main__":

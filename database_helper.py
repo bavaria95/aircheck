@@ -201,13 +201,25 @@ def get_symptom_name(symptom_id):
     except:
         return {"success": False, "message": "Database problems."}
         
-    c.execute("INSERT INTO Symptom(name) VALUES (?)", ("Pnemonia",))
 
     c.execute("SELECT COUNT(*) FROM Symptom WHERE id=?",(symptom_id, ))
     if c.fetchone()[0] != 1:
         return {"success": False, "message": "No such symptom."}
 
-    return c.execute("SELECT name FROM Symptom WHERE id=?",(symptom_id, ))
+    return c.execute("SELECT name FROM Symptom WHERE id=?",(symptom_id, )).fetchone()
+
+def get_problem_name(problem_id):
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    c.execute("SELECT COUNT(*) FROM Problem WHERE id=?",(problem_id, ))
+    if c.fetchone()[0] != 1:
+        return {"success": False, "message": "No such problem."}
+
+    return c.execute("SELECT name FROM Problem WHERE id=?",(problem_id, )).fetchone()
 
 
 
