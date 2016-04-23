@@ -102,9 +102,7 @@
 			<div id="problems">
 				<h1>Health problems</h1>
 				
-				<div>
-					<ul id="problems-list"></ul>
-				</div>
+				<ul id="problems-list"></ul>
 				
 				<form id="adding-problems-form" onsubmit="add_problem(); return false;">
 					<div class="line" id="adding-problems"></div>
@@ -121,7 +119,34 @@
 
 		<div id="home-view" style="display: none;">
 			<div class="user-info">
-				<h1>User info</h1>
+				<h1>User symptoms</h1>
+				<h1>Symptoms list</h1>
+				<ul id="symptoms-list"></ul>
+
+				<h1>Add new symptom</h1>
+				<form id="adding-symptoms-form" onsubmit="add_symptom(); return false;">
+
+					<div class="line">
+						<label>symptom</label><div id="adding-symptoms"></div>
+					</div>
+					<div class="line">
+						<label>timestamp1 </label><input type="time" class="form-field" name="time-start" required>
+					</div>
+					<div class="line">
+						<label>timestamp2 </label><input type="text" class="form-field" name="time-end" required>
+					</div>
+					<div class="line">
+						<label>latitude </label><input type="text" class="form-field" name="latitude" required>
+					</div>
+					<div class="line">
+						<label>longitude </label><input type="text" class="form-field" name="longitude" required>
+					</div>
+					<div class="line" id="typeofarea"></div>
+
+					<div class="line">
+						<input type="submit" value="Add" class="form-button">
+					</div>
+				</form>
 				
 			</div>
 

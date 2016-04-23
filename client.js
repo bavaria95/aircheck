@@ -204,7 +204,7 @@ activate_account = function() {
     document.getElementById('browse-view').style = "display: none;";
     highlight_label('account');
 
-    get_list_of_problems();
+    display_user_problems();
 }
 
 
@@ -213,6 +213,9 @@ activate_home = function() {
     document.getElementById('home-view').style = "display: block;";
     document.getElementById('browse-view').style = "display: none;";
     highlight_label('home');
+
+    display_user_symptoms();
+    get_list_of_areas();
 }
 
 
@@ -291,21 +294,98 @@ add_problem = function() {
 }
 display_user_problems = function() {
     ajax_call("GET", "/problem?token="+get_token(), fill_in_user_problems);
+    get_list_of_problems();
 }
 fill_in_user_problems = function(problems) {
     document.getElementById("problems-list").innerHTML = '';
 
     for (var i = 0; i < problems.length; i++) {
         var new_li = document.createElement("li");
-        // new_li.setAttribute("value", problems[i][0]);
 
-        var text = document.createTextNode(problems[i][2]);
+        var text = document.createTextNode(problems[i]);
         new_li.appendChild(text);
 
         document.getElementById("problems-list").appendChild(new_li);
     }
+}
 
-    // document.getElementById("adding-problems").appendChild(new_select);
+
+fill_in_all_symptoms = function(symptoms) {
+    document.getElementById("adding-symptoms").innerHTML = '';
+
+    var new_select = document.createElement("select");
+    new_select.setAttribute("id", "dropdown-symptoms");
+    new_select.setAttribute("name", "symptom-id");
+
+    for (var i = 0; i < symptoms.length; i++) {
+        var new_option = document.createElement("option");
+        new_option.setAttribute("value", symptoms[i][0]);
+
+        var text = document.createTextNode(symptoms[i][1]);
+        new_option.appendChild(text);
+
+        new_select.appendChild(new_option);
+    }
+
+    document.getElementById("adding-symptoms").appendChild(new_select);
+}
+get_list_of_symptoms = function() {
+    ajax_call("GET", "/symptoms", fill_in_all_symptoms);
+}
+add_symptom = function() {
+    var form = document.forms['adding-symptoms-form'];
+
+    var data = {'symptom_id': form['symptom-id'].value,
+        'timestamp_start': form['time-start'].value,
+        'timestamp_end': form['time-end'].value,
+        'latitude': form['latitude'].value,
+        'longitude': form['longitude'].value,
+        'typeofarea': form['typeofarea-id'].value,
+        'token': get_token()};
+
+    console.log(data);
+    ajax_call("POST", "/symptom", display_user_symptoms, data);
+}
+display_user_symptoms = function() {
+    ajax_call("GET", "/symptom?token="+get_token(), fill_in_user_symptoms);
+    get_list_of_symptoms();
+}
+fill_in_user_symptoms = function(symptoms) {
+    document.getElementById("symptoms-list").innerHTML = '';
+
+    for (var i = 0; i < symptoms.length; i++) {
+        var new_li = document.createElement("li");
+
+        var text = document.createTextNode(symptoms[i]);
+        new_li.appendChild(text);
+
+        document.getElementById("symptoms-list").appendChild(new_li);
+    }
+}
+
+
+
+fill_in_all_areas = function(areas) {
+    document.getElementById("typeofarea").innerHTML = '';
+
+    var new_select = document.createElement("select");
+    new_select.setAttribute("id", "dropdown-typeofarea");
+    new_select.setAttribute("name", "typeofarea-id");
+
+    for (var i = 0; i < areas.length; i++) {
+        var new_option = document.createElement("option");
+        new_option.setAttribute("value", areas[i][0]);
+
+        var text = document.createTextNode(areas[i][1]);
+        new_option.appendChild(text);
+
+        new_select.appendChild(new_option);
+    }
+
+    document.getElementById("typeofarea").appendChild(new_select);
+}
+get_list_of_areas = function() {
+    ajax_call("GET", "/areatypes", fill_in_all_areas);
 }
 
 display_error_msg_change = function(msg) {

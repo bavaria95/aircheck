@@ -63,6 +63,16 @@ def problems():
 def areatypes():
     return json.dumps(database_helper.get_all_area_types())
 
+@app.route('/symptom', methods=['POST', 'GET'])
+def symptom():
+    if request.method == 'GET':
+        params = request.args
+        return json.dumps(database_helper.get_all_symptoms_for_user(params))
+
+    if request.method == 'POST':
+        params = request.json
+        return json.dumps(database_helper.add_symptom_entry(params))
+
 @app.route('/symptoms', methods=['GET'])
 def symptoms():
     return json.dumps(database_helper.get_all_symptoms())
