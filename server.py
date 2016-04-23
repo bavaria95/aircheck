@@ -1,35 +1,28 @@
-from datetime import timedelta
-from functools import update_wrapper
 from flask import Flask, request
-from flask.ext.cors import CORS
 import json
-import helper
 import database_helper
+from flask.ext.cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
+@app.before_request
+def before_request():
+    database_helper.connect_db()
 
-@app.route("/users", methods=["POST", "GET"])
-@app.route("/users/<int:user_id>", methods=["GET", "DELETE", "PUT"])
-def users(user_id=None):
-    if request.method == "POST":
-        params = request.json
-        return json.dumps(database_helper.sign_up(params))
-    
-    if request.method == "GET":
-        params = request.args
-        if user_id:
-            return json.dumps(database_helper.get_user_info(params, user_id))
-        return json.dumps(database_helper.get_all_users(params))
+@app.teardown_request
+def teardown_request(exception):
+    database_helper.close_db()
 
-    if request.method == "DELETE":
-        params = request.json
-        return json.dumps(database_helper.remove_user(params, user_id))        
+@app.route("/sign_up", methods=["POST"])
+def sign_up():
+    params = request.json
+    return json.dumps(database_helper.sign_up_user(params))
 
-    if request.method == "PUT":
-        params = request.json
-        return json.dumps(database_helper.update_user(params, user_id))
+@app.route("/sign_in", methods=["POST"])
+def sign_in():
+    params = request.json
+    return json.dumps(database_helper.sign_in_user(params))
 
 @app.route("/symptoms", methods["POST","GET"])
 @app.route("/symptoms/<int:symptom_id>", methods ["GET"])
@@ -37,13 +30,31 @@ def symptoms(symptom_id=None):
     if symptom_id:
         return json.dumps(Symptom.query())
 
-
-@app.route("/login", methods=["POST"])
-def login():
+@app.route("/sign_out", methods=["POST"])
+def sign_out():
     params = request.json
-    return json.dumps(database_helper.login(params))
+    return json.dumps(database_helper.sign_out_user(params))
 
-@app.route("/logout", methods=["POST"])
-def logout():
+@app.route("/change_password", methods=["POST"])
+def change_password():
     params = request.json
-    return json.dumps(database_helper.logout(params))
+    return json.dumps(database_helper.change_password(params))
+
+@app.route("/get_user_data_by_email", methods=["GET"])
+def get_user_data_by_email():
+    params = request.args
+    return json.dumps(database_helper.get_user_data_by_email(params))
+
+@app.route("/get_user_data_by_token", methods=["GET"])
+def get_user_data_by_token():
+    params = request.args
+    return json.dumps(database_helper.get_user_data_by_token(params))
+
+@app.route("/test", methods=["GET"])
+def test():
+    params = request.json
+    database_helper._create_database_structure()
+    return '42'
+
+if __name__ == "__main__":
+    app.run(debug=True)
