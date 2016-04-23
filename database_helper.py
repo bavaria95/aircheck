@@ -252,6 +252,16 @@ def get_all_health_problems():
 
     return c.execute("SELECT * FROM Problem").fetchall()
 
+def get_all_area_types():
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    return c.execute("SELECT * FROM TypeOfArea").fetchall()
+
+
 
 
 

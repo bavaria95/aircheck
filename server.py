@@ -49,6 +49,9 @@ def sensor():
 def problems():
     return json.dumps(database_helper.get_all_health_problems())
 
+@app.route('/areatypes', methods=['GET'])
+def areatypes():
+    return json.dumps(database_helper.get_all_area_types())
 
 @app.route("/test", methods=["GET"])
 def test():
