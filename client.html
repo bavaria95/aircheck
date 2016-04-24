@@ -28,16 +28,17 @@
 							</div>
 						</center>
 						<form id="login-form" onsubmit="login_form(); return false;">
-							
-							<div class="line">
-								<label>Email </label><input type="email" class="form-field" name="email" required>
+							<h4><center>Login</center></h4>
+
+							<div class="form-group">
+							    <input type="email" class="form-control" placeholder="Email" name="email" required>
 							</div>
-							<div class="line">
-								<label>Password </label><input type="password" class="form-field" name="pass" pattern=".{8,}" required>
+
+							<div class="form-group">
+							    <input type="password" class="form-control" placeholder="Password" name="pass" pattern=".{8,}" required>
 							</div>
-							<div class="line">
-								<input type="submit" value="Login" class="form-button">
-							</div>
+
+							<button type="submit" class="btn btn-default">Login</button>
 						</form>
 					</div>	
 
@@ -53,20 +54,19 @@
 								</div>
 							</div>
 
-							<div class="line">
-								<label>Email </label><input type="email" name="email" id="signupemail" class="form-field" required>
+							<div class="form-group">
+							    <input type="email" class="form-control" placeholder="Email" name="email" required>
 							</div>
 
-							<div class="line">
-								<label>Password </label><input type="password" name="pass" id="regpass1" class="form-field" required>
-							</div>
-							<div class="line">
-								<label>Repeat PSW </label><input type="password" name="repass" id="regpass2" class="form-field" required>
+							<div class="form-group">
+							    <input type="password" class="form-control" placeholder="Password" name="pass" pattern=".{8,}" required>
 							</div>
 
-							<div class="line">
-								<input type="submit" value="Sign up" class="form-button">
+							<div class="form-group">
+							    <input type="password" class="form-control" placeholder="Password" name="repass" pattern=".{8,}" required>
 							</div>
+
+							<button type="submit" class="btn btn-default">Sign up</button>
 						</form>
 					</div>
 				</div>
