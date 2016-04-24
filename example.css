@@ -19,11 +19,11 @@
  */
 
 #map {
-    background-color: #000000;
-    position: absolute;
+    /*background-color: #000000;*/
+    /*position: absolute;*/
     top: 0;
     left: 0;
-    width: 100%;
+    width: 101%;
     height: 100%;
 }
 
@@ -41,7 +41,7 @@
 }
 
 #attribution {
-    position: absolute;
+    /*position: absolute;*/
     bottom: 1em;
     right: 1em;
     padding: 1em;

@@ -20,7 +20,7 @@
 
 var toggleCO2;
 
-window.onload = function() {
+function main() {
 
     var source = new ol.source.MapQuest({layer: 'sat'})
 

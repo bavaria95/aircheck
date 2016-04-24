@@ -1,6 +1,144 @@
 var mymap;
 var my_marker;
 
+// var loadOL;
+var toggleCO2;
+
+loadOL = function(lat, lng) {
+
+    var source = new ol.source.MapQuest({layer: 'sat'})
+
+    var osm_source = new ol.source.OSM();
+
+    var source2 = new ol.source.WMTS({
+        url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-geo/",
+        layer: "SMAP_L4_Mean_Gross_Primary_Productivity",
+        time: "2015-09-17",
+        matrixSet: "EPSG4326_2km",
+        format: "image/png",
+
+       // service: "OGC WMTS",
+
+
+        tileGrid: new ol.tilegrid.WMTS({
+            origin: [-180, 90],
+            resolutions: [
+                0.5625,
+                0.28125,
+                0.140625,
+                0.0703125,
+                0.03515625,
+                0.017578125
+                // 0.0087890625,
+                // 0.00439453125,
+                // 0.002197265625
+            ],
+            matrixIds: [0, 1, 2, 3, 4, 5],
+            tileSize: 512
+        })
+    });
+
+    var features = new Array(1);
+
+    function toFeature(lat,lon){
+        return new ol.Feature(new ol.geom.Point([lon,lat]));
+    }
+    features[0] = toFeature(lat, lng)
+
+    // features[1] = toFeature(58.4, 15.616667);
+    // features[2] = toFeature(-27.166667, -109.416667);
+    
+
+    console.log(ol.proj.transform([50.061389, 19.938333], 'EPSG:4326', 'EPSG:3857'));
+    var sourceVec = new ol.source.Vector({
+        features: features
+    });
+
+    var clusterSource = new ol.source.Cluster({
+        distance: 40,
+        source: sourceVec
+    });
+
+
+    
+    var styleCache = {};
+
+    var clusters = new ol.layer.Vector({
+        source: clusterSource,
+        style: function(feature) {
+            var size = feature.get('features').length;
+            console.log("Size",size);
+            var style = styleCache[size];
+            if (!style) {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 10,
+                        stroke: new ol.style.Stroke({
+                            color: '#fff'
+                        }),
+                        fill: new ol.style.Fill({
+                            color: '#3399CC'
+                        })
+                    }),
+                    text: new ol.style.Text({
+                        text: size.toString(),
+                        fill: new ol.style.Fill({
+                            color: '#fff'
+                        })
+                    })
+                });
+                styleCache[size] = style;
+            }
+            return style;
+        }
+    });
+    
+    var layer = new ol.layer.Tile({
+        source: source
+    });
+
+    var layer2 = new ol.layer.Tile({
+        source: source2,
+        opacity: 0.55
+    });
+
+
+
+    var layer3 = new ol.layer.Tile({
+        source: osm_source,
+        opacity: 1
+    });
+
+
+    var map = new ol.Map({
+        layers: [layer3, layer2, clusters],
+        renderer: ['canvas','dom'],
+        target: 'map',
+        view: new ol.View({
+            projection: ol.proj.get("EPSG:4326"),
+            extent: [-180, -90, 180, 90],
+            center: [lng, lat],
+            zoom: 7
+        })
+    });
+
+    toggleCO2 = function(){
+        layer2.setVisible(!layer2.getVisible());
+    }
+
+
+    map.getView().on('change:resolution', function(){
+        var zoom = map.getView().getZoom();
+        // console.log("whee", map.getView().getZoom())
+
+        var zoom_capped = Math.min(14,Math.max(zoom,8)) - 8;
+        var opacity_val = (1-((zoom_capped)/6.0)) * 0.55;
+
+        layer2.setOpacity(opacity_val);
+    })
+};
+
+
 ajax_call = function(method, path, func, data) {
     url = 'http://127.0.0.1:5000';
 
@@ -246,6 +384,7 @@ activate_home = function() {
     highlight_label('home');
 
     create_map();
+    // loadOL();
 
     display_user_symptoms();
     get_list_of_areas();
@@ -382,10 +521,11 @@ add_symptom = function() {
                 'typeofarea': form['typeofarea-id'].value,
                 'token': get_token(),
                 'timestamp_start': Date.parse(form['start-date'].value, form['start-time'].value)/1000,
-                'timestamp_end': Date.parse(form['end-date'].value, form['end-time'].value)/1000,
                 'latitude': mark['lat'],
                 'longitude': mark['lng']
             };
+
+    loadOL(mark['lat'], mark['lng']);
 
 
     ajax_call("POST", "/symptom", display_user_symptoms, data);
@@ -439,7 +579,7 @@ display_error_msg_change = function(msg) {
     document.getElementById("change-error").innerHTML = msg;
 }
 
-create_map = function() {
+create_map = function() {    
     if (mymap)
         mymap.remove();
 
@@ -468,3 +608,4 @@ create_map = function() {
     }
     mymap.on('click', onMapClick);
 }
+

@@ -364,7 +364,7 @@ def get_all_symptoms_for_user(d):
 
 def add_symptom_entry(d):
     try:
-        data = (int(storage.get_user_id(d['token'])), d['timestamp_start'], d['timestamp_end'],
+        data = (int(storage.get_user_id(d['token'])), d['timestamp_start'],
                 d['latitude'], d['longitude'], d['typeofarea'], d['symptom_id'])
     except:
         return {"success": False, "message": "Form data missing or incorrect type."}
@@ -376,7 +376,7 @@ def add_symptom_entry(d):
         return {"success": False, "message": "Database problems."}
 
     try:
-        c.execute("INSERT INTO UserHasSymptoms(user, timestamp_start, timestamp_end, latitude, longitude, typeofarea, symptom) VALUES (?, ?, ?, ?, ?, ?, ?)", data)
+        c.execute("INSERT INTO UserHasSymptoms(user, timestamp_start, latitude, longitude, typeofarea, symptom) VALUES (?, ?, ?, ?, ?, ?)", data)
         db.commit()
     except:
         return {"success": False, "message": "Something went wrong."}
