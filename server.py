@@ -45,6 +45,16 @@ def sensors():
     return json.dumps(database_helper.get_all_sensor_data())
 
 
+@app.route('/problem', methods=['POST', 'GET'])
+def problem():
+    if request.method == 'GET':
+        params = request.args
+        return json.dumps(database_helper.get_all_problems_for_user(params))
+
+    if request.method == 'POST':
+        params = request.json
+        return json.dumps(database_helper.add_heath_problem(params))
+
 @app.route('/problems', methods=['GET'])
 def problems():
     return json.dumps(database_helper.get_all_health_problems())
@@ -52,6 +62,16 @@ def problems():
 @app.route('/areatypes', methods=['GET'])
 def areatypes():
     return json.dumps(database_helper.get_all_area_types())
+
+@app.route('/symptom', methods=['POST', 'GET'])
+def symptom():
+    if request.method == 'GET':
+        params = request.args
+        return json.dumps(database_helper.get_all_symptoms_for_user(params))
+
+    if request.method == 'POST':
+        params = request.json
+        return json.dumps(database_helper.add_symptom_entry(params))
 
 @app.route('/symptoms', methods=['GET'])
 def symptoms():

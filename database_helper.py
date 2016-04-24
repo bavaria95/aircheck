@@ -222,11 +222,11 @@ def get_symptom_name(symptom_id):
         return {"success": False, "message": "Database problems."}
         
 
-    c.execute("SELECT COUNT(*) FROM Symptom WHERE id=?",(symptom_id, ))
+    c.execute("SELECT COUNT(*) FROM Symptom WHERE id=?", (symptom_id,))
     if c.fetchone()[0] != 1:
         return {"success": False, "message": "No such symptom."}
 
-    return c.execute("SELECT name FROM Symptom WHERE id=?",(symptom_id, )).fetchone()
+    return c.execute("SELECT name FROM Symptom WHERE id=?",(symptom_id, )).fetchone()[0]
 
 def get_problem_name(problem_id):
     try:
@@ -235,17 +235,21 @@ def get_problem_name(problem_id):
     except:
         return {"success": False, "message": "Database problems."}
 
-    c.execute("SELECT COUNT(*) FROM Problem WHERE id=?",(problem_id, ))
+    c.execute("SELECT COUNT(*) FROM Problem WHERE id=?", (problem_id,))
     if c.fetchone()[0] != 1:
         return {"success": False, "message": "No such problem."}
 
-    return c.execute("SELECT name FROM Problem WHERE id=?",(problem_id, )).fetchone()
+    return c.execute("SELECT name FROM Problem WHERE id=?",(problem_id, )).fetchone()[0]
 
 
 def add_sensor_data(d):
     try:
-        data = (float(d['latitude']), float(d['longitude']), float(d['temperature']),
-                float(d['humidity']), float(d['airpressure']), int(d['timestamp']))
+        data1 = (float(d['latitude1']), float(d['longitude1']), float(d['temperature1']),
+                float(d['humidity1']), float(d['airpressure1']), int(d['timestamp']))
+        data2 = (float(d['latitude2']), float(d['longitude2']), float(d['temperature2']),
+                float(d['humidity2']), float(d['airpressure2']), data1[-1] + 1)
+        data3 = (float(d['latitude3']), float(d['longitude3']), float(d['temperature3']),
+                float(d['humidity3']), float(d['airpressure3']), data1[-1] + 2)
     except:
         return {"success": False, "message": "Form data missing or incorrect type."}
 
@@ -256,7 +260,9 @@ def add_sensor_data(d):
         return {"success": False, "message": "Database problems."}
 
     try:
-        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data)
+        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data1)
+        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data2)
+        c.execute("INSERT INTO Sensor(latitude, longitude, temperature, humidity, airpressure, timestamp) VALUES (?, ?, ?, ?, ?, ?)", data3)
         db.commit()
     except:
         return {"success": False, "message": "Something went wrong."}
@@ -271,6 +277,44 @@ def get_all_sensor_data():
         return {"success": False, "message": "Database problems."}
 
     return c.execute("SELECT * FROM Sensor").fetchall()
+
+def add_heath_problem(d):
+    try:
+        data = (storage.get_user_id(d['token']), int(d['problem_id']))
+    except:
+        return {"success": False, "message": "Form data missing or incorrect type."}
+
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    try:
+        c.execute("INSERT INTO UserHasProblems(user, problem) VALUES (?, ?)", data)
+        db.commit()
+    except:
+        return {"success": False, "message": "Something went wrong."}
+
+    return {"success": True, "message": "Successfully added a new health problem for the user."}
+
+def get_all_problems_for_user(d):
+    try:
+        data = (int(storage.get_user_id(d['token'])))
+    except:
+        return {"success": False, "message": "Form data missing or incorrect type."}
+
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    ids = list(set(map(lambda x: x[0], 
+                       c.execute("SELECT problem FROM UserHasProblems WHERE user=?",
+                                 (int(storage.get_user_id(d['token'])),)).fetchall())))
+    # i know, there should be join. but this is a hackathon ;)
+    return map(get_problem_name, ids)
 
 def get_all_health_problems():
     try:
@@ -299,7 +343,43 @@ def get_all_symptoms():
 
     return c.execute("SELECT * FROM Symptom").fetchall()
 
+def get_all_symptoms_for_user(d):
+    try:
+        data = (int(storage.get_user_id(d['token'])))
+    except:
+        return {"success": False, "message": "Form data missing or incorrect type."}
+
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    ids = list(set(map(lambda x: x[0], 
+                       c.execute("SELECT symptom FROM UserHasSymptoms WHERE user=?",
+                                 (int(storage.get_user_id(d['token'])),)).fetchall())))
+    # i know, there should be join. but this is a hackathon ;)
+    return map(get_symptom_name, ids)
 
 
+def add_symptom_entry(d):
+    try:
+        data = (int(storage.get_user_id(d['token'])), d['timestamp_start'], d['timestamp_end'],
+                d['latitude'], d['longitude'], d['typeofarea'], d['symptom_id'])
+    except:
+        return {"success": False, "message": "Form data missing or incorrect type."}
 
+    try:
+        db = get_db()
+        c = db.cursor()
+    except:
+        return {"success": False, "message": "Database problems."}
+
+    try:
+        c.execute("INSERT INTO UserHasSymptoms(user, timestamp_start, timestamp_end, latitude, longitude, typeofarea, symptom) VALUES (?, ?, ?, ?, ?, ?, ?)", data)
+        db.commit()
+    except:
+        return {"success": False, "message": "Something went wrong."}
+
+    return {"success": True, "message": "Successfully added a new symptom for the user."}
 

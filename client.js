@@ -1,3 +1,6 @@
+var mymap;
+var my_marker;
+
 ajax_call = function(method, path, func, data) {
     url = 'http://127.0.0.1:5000';
 
@@ -52,6 +55,7 @@ define_onclick_functions = function() {
     signout_button.onclick = function() {
         signout();
     }
+
 }
 
 display_view = function(view) {
@@ -64,6 +68,33 @@ display_view = function(view) {
         document.getElementsByTagName("body")[0].style.background = "#FFF";
         activate_account();
     }
+}
+
+init_timepicker = function(id) {
+    $('#'+id).timepicker({
+                minuteStep: 1,
+                showMeridian: false,
+                defaultTime: false,
+    });
+
+    $('#'+id).on('show.timepicker', function(e) {
+        var d = new Date;
+        var time = d.getHours() + ":" + d.getMinutes();
+        $('#'+id).timepicker('setTime', time);
+      });
+}
+
+init_datepicker = function(id) {
+    $('#'+id).datepicker({
+        format: "yyyy-mm-dd",
+        todayBtn: "linked",
+        weekStart: 1,
+        clearBtn: true,
+        multidate: false,
+        forceParse: false,
+        toggleActive: true,
+        autoclose: true
+    });
 }
 
 check_reg_correctness = function() {
@@ -105,7 +136,8 @@ login = function(email, password) {
             localStorage.setItem('token', resp.data);
 
             display_view('profileview');
-            activate_account();
+            // activate_account();
+            activate_home();
         }
     }
 
@@ -202,6 +234,8 @@ activate_account = function() {
     document.getElementById('home-view').style = "display: none;";
     document.getElementById('browse-view').style = "display: none;";
     highlight_label('account');
+
+    display_user_problems();
 }
 
 
@@ -211,31 +245,23 @@ activate_home = function() {
     document.getElementById('browse-view').style = "display: none;";
     highlight_label('home');
 
-    fill_user_info_fields('home', get_user_info());
-    refresh_wall('home');
-}
-fill_user_info_fields = function(tab, info) {
+    create_map();
 
-    document.getElementById(tab + '-email').innerHTML = info.email;
-    document.getElementById(tab + '-firstname').innerHTML = info.firstname;
-    document.getElementById(tab + '-familyname').innerHTML = info.familyname;
-    document.getElementById(tab + '-gender').innerHTML = info.gender;
-    document.getElementById(tab + '-city').innerHTML = info.city;
-    document.getElementById(tab + '-country').innerHTML = info.country;
+    display_user_symptoms();
+    get_list_of_areas();
+
+    init_datepicker('start-date');
+    init_timepicker('start-time');
+    init_datepicker('end-date');
+    init_timepicker('end-time');
 }
+
 
 activate_browse = function() {
     document.getElementById('account-view').style = "display: none;";
     document.getElementById('home-view').style = "display: none;";
     document.getElementById('browse-view').style = "display: block;";
     highlight_label('browse');
-
-    document.getElementById('profile-unfam').style = "display: none;";
-    document.getElementById('search-content').style = "display: block;";
-
-    document.getElementById('search-error').innerHTML = '';
-    document.getElementById('search-field').value = '';
-
 }
 
 
@@ -274,16 +300,171 @@ change_password = function() {
     }
 
     ajax_call("POST", "/change_password", func, data);
+}
 
+fill_in_all_problems = function(problems) {
+    document.getElementById("adding-problems").innerHTML = '';
+
+    var new_select = document.createElement("select");
+    new_select.setAttribute("id", "dropdown-problems");
+    new_select.setAttribute("name", "problem-id");
+    new_select.setAttribute("class", "form-control");
+
+    for (var i = 0; i < problems.length; i++) {
+        var new_option = document.createElement("option");
+        new_option.setAttribute("value", problems[i][0]);
+
+        var text = document.createTextNode(problems[i][1]);
+        new_option.appendChild(text);
+
+        new_select.appendChild(new_option);
+    }
+
+    document.getElementById("adding-problems").appendChild(new_select);
+}
+get_list_of_problems = function() {
+    ajax_call("GET", "/problems", fill_in_all_problems);
+}
+add_problem = function() {
+    var form = document.forms['adding-problems-form'];
+    var problem_id = form['problem-id'].value;
+    ajax_call("POST", "/problem", display_user_problems, {'token': get_token(),
+                                                          'problem_id': problem_id});
+}
+display_user_problems = function() {
+    ajax_call("GET", "/problem?token="+get_token(), fill_in_user_problems);
+    get_list_of_problems();
+}
+fill_in_user_problems = function(problems) {
+    document.getElementById("problems-list").innerHTML = '';
+
+    for (var i = 0; i < problems.length; i++) {
+        var new_li = document.createElement("li");
+        new_li.setAttribute("class", "list-group-item");
+
+        var text = document.createTextNode(problems[i]);
+        new_li.appendChild(text);
+
+        document.getElementById("problems-list").appendChild(new_li);
+    }
+}
+
+
+fill_in_all_symptoms = function(symptoms) {
+    document.getElementById("adding-symptoms").innerHTML = '';
+
+    var new_select = document.createElement("select");
+    new_select.setAttribute("id", "dropdown-symptoms");
+    new_select.setAttribute("name", "symptom-id");
+    new_select.setAttribute("class", "form-control");
+
+    for (var i = 0; i < symptoms.length; i++) {
+        var new_option = document.createElement("option");
+        new_option.setAttribute("value", symptoms[i][0]);
+
+        var text = document.createTextNode(symptoms[i][1]);
+        new_option.appendChild(text);
+
+        new_select.appendChild(new_option);
+    }
+
+    document.getElementById("adding-symptoms").appendChild(new_select);
+}
+get_list_of_symptoms = function() {
+    ajax_call("GET", "/symptoms", fill_in_all_symptoms);
+}
+add_symptom = function() {
+    var form = document.forms['adding-symptoms-form'];
+
+    var mark = my_marker.getLatLng();
+
+    var data = {'symptom_id': form['symptom-id'].value,
+                'typeofarea': form['typeofarea-id'].value,
+                'token': get_token(),
+                'timestamp_start': Date.parse(form['start-date'].value, form['start-time'].value)/1000,
+                'timestamp_end': Date.parse(form['end-date'].value, form['end-time'].value)/1000,
+                'latitude': mark['lat'],
+                'longitude': mark['lng']
+            };
+
+
+    ajax_call("POST", "/symptom", display_user_symptoms, data);
+}
+display_user_symptoms = function() {
+    ajax_call("GET", "/symptom?token="+get_token(), fill_in_user_symptoms);
+    get_list_of_symptoms();
+    document.getElementById("adding-symptoms-form").reset();
+}
+fill_in_user_symptoms = function(symptoms) {
+    document.getElementById("symptoms-list").innerHTML = '';
+
+    for (var i = 0; i < symptoms.length; i++) {
+        var new_li = document.createElement("li");
+        new_li.setAttribute("class", "list-group-item");
+
+        var text = document.createTextNode(symptoms[i]);
+        new_li.appendChild(text);
+
+        document.getElementById("symptoms-list").appendChild(new_li);
+    }
+}
+
+
+
+fill_in_all_areas = function(areas) {
+    document.getElementById("typeofarea").innerHTML = '';
+
+    var new_select = document.createElement("select");
+    new_select.setAttribute("id", "dropdown-typeofarea");
+    new_select.setAttribute("name", "typeofarea-id");
+    new_select.setAttribute("class", "form-control");
+
+    for (var i = 0; i < areas.length; i++) {
+        var new_option = document.createElement("option");
+        new_option.setAttribute("value", areas[i][0]);
+
+        var text = document.createTextNode(areas[i][1]);
+        new_option.appendChild(text);
+
+        new_select.appendChild(new_option);
+    }
+
+    document.getElementById("typeofarea").appendChild(new_select);
+}
+get_list_of_areas = function() {
+    ajax_call("GET", "/areatypes", fill_in_all_areas);
 }
 
 display_error_msg_change = function(msg) {
     document.getElementById("change-error").innerHTML = msg;
 }
 
+create_map = function() {
+    if (mymap)
+        mymap.remove();
 
-show_profile = function(data) {
-    document.getElementById('search-content').style = "display: none;";
-    document.getElementById('profile-unfam').style = "display: block;";
-    // fill_user_info_fields('browse', data);
+    mymap = L.map('mapid').setView([58.3953, 15.5596], 13);
+    
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
+        maxZoom: 18,
+        id: 'mapbox.streets'
+    }).addTo(mymap);
+
+    my_marker = L.marker([58.3953, 15.5596]);
+    my_marker.addTo(mymap);
+
+    place_marker = function(obj) {
+        if (my_marker)
+            mymap.removeLayer(my_marker);
+
+        my_marker = L.marker([obj.lat, obj.lng]);
+        my_marker.addTo(mymap);
+
+    }
+
+
+    function onMapClick(e) {
+        place_marker(e.latlng);
+    }
+    mymap.on('click', onMapClick);
 }
