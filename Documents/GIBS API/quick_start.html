@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.15.1/css/ol.css" type="text/css">
+    <style>
+        .map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+    <script src="http://openlayers.org/en/v3.15.1/build/ol.js" type="text/javascript"></script>
+    <title>OpenLayers 3 example</title>
+</head>
+<body>
+<h2>My Map</h2>
+<div id="map" class="map"></div>
+<script type="text/javascript">
+
+
+
+    var createXYZLayer = function(url){
+        return new ol.layer.Tile({
+            source: new ol.source.XYZ ({url:url})
+        })
+    };
+
+
+
+
+    var osm_source = new ol.source.OSM();
+    var mq_source = new ol.source.MapQuest({layer: 'sat'});
+
+
+//
+    var nasa_layer = createXYZLayer('http://map1{a-c}.vis.earthdata.nasa.gov/wmts-geo/SMAP_L4_Mean_Net_Ecosystem_Exchange/default/2015-07-09/EPSG4326_2km/{z}/{y}/{x}.png'  );
+
+//    var nasa0_layer = new ol.layer.Tile({
+//       source: nasa0_src
+//    });
+
+    var osm_layer = new ol.layer.Tile({
+        source: osm_source
+    });
+
+    var mq_layer = new ol.layer.Tile({
+        source: mq_source
+    });
+
+    var nasa2_layer = createXYZLayer('http://map1{a-c}.vis.earthdata.nasa.gov/wmts-geo/MODIS_Terra_CorrectedReflectance_TrueColor/default/2015-07-09/EPSG4326_250m/{z}/{y}/{x}.jpeg');
+
+    var map = new ol.Map({
+        layers: [],
+       target: 'map',
+        view : new ol.View({
+            projection: 'EPSG:4326',
+            center: [0,90],
+            zoom:2
+        })
+    });
+
+    map.addLayer(osm_layer);
+    map.addLayer(mq_layer);
+//map.addLayer(nasa0_layer);
+map.addLayer(nasa2_layer);
+map.addLayer(nasa_layer);
+
+
+</script>
+</body>
+</html>
