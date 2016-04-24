@@ -90,85 +90,112 @@
 			<div id="content">
 
 			<div id="account-view" style="display:block;">
-			<button id="sign-out" type="button">Sign out</button>
-			<div id="pwd-change-wrapper">
+			<button id="sign-out" type="button" class="btn btn-default">Sign out</button>
+			<div class="row">
+			<div id="pwd-change-wrapper" class="col-md-5">
 					<div id="change-error"></div>
 					<div id="password-change">
-						<h1>Reset Password</h1>
+						<h2>Reset Password</h2>
 						<form id="pass-change-form" onsubmit="change_password(); return false;">
-									<div class="line">
-										<label>Current password: </label><input type="password" class="form-field" name="current" required>
-									</div>
-									<div class="line">
-										<label>New password: </label><input type="password" class="form-field" name="pass1" required>
-									</div>
-									<div class="line">
-										<label>Repeat password: </label><input type="password" class="form-field" name="pass2" required>
-									</div>
-									<div class="line">
-										<input type="submit" value="Change" class="form-button">
-									</div>
-								</form>
+								<div class="form-group">
+    								<label>Current password</label>
+    								<input type="password" class="form-control" name="current" placeholder="Current password" required>
+  								</div>
+
+  								<div class="form-group">
+    								<label>New password</label>
+    								<input type="password" class="form-control" name="pass1" placeholder="New password" required>
+  								</div>
+
+  								<div class="form-group">
+    								<label>Repeat password</label>
+    								<input type="password" class="form-control" name="pass2" placeholder="Repeat password" required>
+  								</div>
+
+  								<button type="submit" class="btn btn-default">Change</button>
+						</form>
 					</div>
 				</div>
 
-			<div id="problems">
+			<div class="col-md-3"></div>
+
+			<div id="problems" class="col-md-4">
 				<h1>Health problems</h1>
 				
-				<ul id="problems-list"></ul>
+				<ul id="problems-list" class="list-group"></ul>
 				<h3>Add your health problems</h3>
-				<form id="adding-problems-form" onsubmit="add_problem(); return false;">
-					<div class="line" id="adding-problems"></div>
-					<div class="line">
-						<input type="submit" value="Add" class="form-button" id="add-button">
-					</div>
+				<form id="adding-problems-form" class="form-group" onsubmit="add_problem(); return false;">
+					<div id="adding-problems"></div>
+
+					<button type="submit" class="btn btn-default" style="float: right;">Add</button>
 				</form>
 			</div>
-						
+					
+		</div>	
 		</div>
 
 
 		<div id="home-view" style="display: none;">
 			<div id="symptoms-group">
-				<center><h1>User symptoms</h1></center>
-				<h1>Symptoms list</h1>
-				<ul id="symptoms-list"></ul>
+				<center><h2>User symptoms</h2></center>
+				<h2>Symptoms list</h2>
+				<div class="row">
+					<div class="col-md-1"></div>
+					<ul id="symptoms-list" class="list-group col-md-4"></ul>
+				</div>
 
-				<h1>Add new symptom</h1>
-				<form id="adding-symptoms-form" onsubmit="add_symptom(); return false;">
+				<h3>Add new symptom</h3>
+				<form id="adding-symptoms-form" class="col-md-8" onsubmit="add_symptom(); return false;">
+				<div class="row">
+					<div class="form-group">
+    					<label>Symptom</label>
+    					<div id="adding-symptoms"></div>
+  					</div>
 
-					<div class="line">
-						<label>Symptom</label><div id="adding-symptoms"></div>
-					</div>
-					<div class="form-field">
-					    <label for="edit-date" class="col-sm-2 control-label">Date</label>
-					    <div class="col-sm-10">
-					      <input type="text" class="form-control" id="edit-date">
+  					<div class="form-group">
+    					<label>Type of area</label>
+    					<div id="typeofarea"></div>
+  					</div>
+  				</div>
+
+  				<div class="row">
+					<div class="form-group">
+					    <label class="col-md-2 control-label">Date started</label>
+					    <div class="col-md-4">
+					      <input type="text" class="form-control" id="start-date">
 					    </div>
 					  </div>
-					  <div class="form-field">
-					    <label for="edit-time" class="col-sm-2 control-label">Time</label>
-					    <div class="col-sm-10">
-					      <input type="text" class="form-control" id="edit-time">
+
+					  <div class="form-group">
+					    <label class="col-md-2 control-label">Time started</label>
+					    <div class="col-md-4">
+					      <input type="text" class="form-control" id="start-time">
 					    </div>
 					  </div>
-					<div class="line">
-						<label>Ended</label><input type="text" class="form-field" name="time-end" required>
 					</div>
-					<div class="line">
-						<label>latitude </label><input type="text" class="form-field" name="latitude" required>
-					</div>
-					<div class="line">
-						<label>longitude </label><input type="text" class="form-field" name="longitude" required>
-					</div>
-					<div class="line" id="typeofarea"></div>
 
-					<div class="line">
-						<input type="submit" value="Add" class="form-button">
-					</div>
+
+					<div class="form-group">
+					    <label class="col-md-2 control-label">Date ended</label>
+					    <div class="col-md-4">
+					      <input type="text" class="form-control" id="end-date">
+					    </div>
+					  </div>
+
+					  <div class="form-group">
+					    <label class="col-md-2 control-label">Time ended</label>
+					    <div class="col-md-4">
+					      <input type="text" class="form-control" id="end-time">
+					    </div>
+					  </div>
+
+					<button type="submit" class="btn btn-default" style="margin: 10px; float: left;">Add</button>
 				</form>
 
-			 <div id="mapid"></div>
+			<div class="row">
+			<div class="col-md-2"></div>
+			 <div id="mapid" class="col-md-6"></div>
+			 </div>
 			</div>
 
 

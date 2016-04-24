@@ -247,8 +247,10 @@ activate_home = function() {
     display_user_symptoms();
     get_list_of_areas();
 
-    init_timepicker('edit-time');
-    init_datepicker('edit-date');
+    init_datepicker('start-date');
+    init_timepicker('start-time');
+    init_datepicker('end-date');
+    init_timepicker('end-time');
 }
 
 
@@ -303,6 +305,7 @@ fill_in_all_problems = function(problems) {
     var new_select = document.createElement("select");
     new_select.setAttribute("id", "dropdown-problems");
     new_select.setAttribute("name", "problem-id");
+    new_select.setAttribute("class", "form-control");
 
     for (var i = 0; i < problems.length; i++) {
         var new_option = document.createElement("option");
@@ -334,6 +337,7 @@ fill_in_user_problems = function(problems) {
 
     for (var i = 0; i < problems.length; i++) {
         var new_li = document.createElement("li");
+        new_li.setAttribute("class", "list-group-item");
 
         var text = document.createTextNode(problems[i]);
         new_li.appendChild(text);
@@ -349,6 +353,7 @@ fill_in_all_symptoms = function(symptoms) {
     var new_select = document.createElement("select");
     new_select.setAttribute("id", "dropdown-symptoms");
     new_select.setAttribute("name", "symptom-id");
+    new_select.setAttribute("class", "form-control");
 
     for (var i = 0; i < symptoms.length; i++) {
         var new_option = document.createElement("option");
@@ -369,12 +374,11 @@ add_symptom = function() {
     var form = document.forms['adding-symptoms-form'];
 
     var data = {'symptom_id': form['symptom-id'].value,
-        'timestamp_start': form['time-start'].value,
-        'timestamp_end': form['time-end'].value,
-        'latitude': form['latitude'].value,
-        'longitude': form['longitude'].value,
-        'typeofarea': form['typeofarea-id'].value,
-        'token': get_token()};
+                'typeofarea': form['typeofarea-id'].value,
+                'token': get_token(),
+                'timestamp_start': Date.parse(form['start-date'].value, form['start-time'].value)/1000,
+                'timestamp_end': Date.parse(form['end-date'].value, form['end-time'].value)/1000
+            };
 
     console.log(data);
     ajax_call("POST", "/symptom", display_user_symptoms, data);
@@ -388,6 +392,7 @@ fill_in_user_symptoms = function(symptoms) {
 
     for (var i = 0; i < symptoms.length; i++) {
         var new_li = document.createElement("li");
+        new_li.setAttribute("class", "list-group-item");
 
         var text = document.createTextNode(symptoms[i]);
         new_li.appendChild(text);
@@ -404,6 +409,7 @@ fill_in_all_areas = function(areas) {
     var new_select = document.createElement("select");
     new_select.setAttribute("id", "dropdown-typeofarea");
     new_select.setAttribute("name", "typeofarea-id");
+    new_select.setAttribute("class", "form-control");
 
     for (var i = 0; i < areas.length; i++) {
         var new_option = document.createElement("option");
