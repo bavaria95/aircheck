@@ -1,3 +1,4 @@
+var mymap;
 var my_marker;
 
 ajax_call = function(method, path, func, data) {
@@ -386,12 +387,13 @@ add_symptom = function() {
                 'longitude': mark['lng']
             };
 
-    console.log(data);
+
     ajax_call("POST", "/symptom", display_user_symptoms, data);
 }
 display_user_symptoms = function() {
     ajax_call("GET", "/symptom?token="+get_token(), fill_in_user_symptoms);
     get_list_of_symptoms();
+    document.getElementById("adding-symptoms-form").reset();
 }
 fill_in_user_symptoms = function(symptoms) {
     document.getElementById("symptoms-list").innerHTML = '';
@@ -437,21 +439,19 @@ display_error_msg_change = function(msg) {
     document.getElementById("change-error").innerHTML = msg;
 }
 
-
-show_profile = function(data) {
-    document.getElementById('search-content').style = "display: none;";
-    document.getElementById('profile-unfam').style = "display: block;";
-    // fill_user_info_fields('browse', data);
-}
-
 create_map = function() {
-    var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+    if (mymap)
+        mymap.remove();
 
+    mymap = L.map('mapid').setView([58.3953, 15.5596], 13);
+    
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
         maxZoom: 18,
         id: 'mapbox.streets'
     }).addTo(mymap);
 
+    my_marker = L.marker([58.3953, 15.5596]);
+    my_marker.addTo(mymap);
 
     place_marker = function(obj) {
         if (my_marker)
@@ -468,4 +468,3 @@ create_map = function() {
     }
     mymap.on('click', onMapClick);
 }
-
