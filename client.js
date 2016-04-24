@@ -67,6 +67,33 @@ display_view = function(view) {
     }
 }
 
+init_timepicker = function(id) {
+    $('#'+id).timepicker({
+                minuteStep: 1,
+                showMeridian: false,
+                defaultTime: false,
+    });
+
+    $('#'+id).on('show.timepicker', function(e) {
+        var d = new Date;
+        var time = d.getHours() + ":" + d.getMinutes();
+        $('#'+id).timepicker('setTime', time);
+      });
+}
+
+init_datepicker = function(id) {
+    $('#'+id).datepicker({
+        format: "yyyy-mm-dd",
+        todayBtn: "linked",
+        weekStart: 1,
+        clearBtn: true,
+        multidate: false,
+        forceParse: false,
+        toggleActive: true,
+        autoclose: true
+    });
+}
+
 check_reg_correctness = function() {
 	var pass1 = document.getElementById("regpass1").value;
     var pass2 = document.getElementById("regpass2").value;
@@ -219,6 +246,9 @@ activate_home = function() {
 
     display_user_symptoms();
     get_list_of_areas();
+
+    init_timepicker('edit-time');
+    init_datepicker('edit-date');
 }
 
 
