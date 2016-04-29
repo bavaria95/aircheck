@@ -29,12 +29,12 @@ print( sorted(list(wmts.contents))[0])
 def convertDegrees(lat, lon):
     return (90 - lat, 180 + lon)
 
-iks, igrek = convertDegrees(-33.866667, 151.2)
+iks, igrek = convertDegrees(58.3953, 15.5596)
 
 # iks, igrek = (90+ (-54.611667), 180 +  18.808056)
 # iks, igrek = (40.7127,180 + -74.0059)
 
-le_z = 6
+le_z = 0
 
 divider = ((0.5625 * 512)/ pow(2,le_z));
 
@@ -45,9 +45,9 @@ print(le_x, le_y)
 
 
 
-tile = wmts.gettile(layer='MODIS_Terra_CorrectedReflectance_TrueColor', tilematrixset='EPSG4326_250m', tilematrix=le_z, row=le_x, column=le_y, format="image/jpeg", time="2016-04-22")
-#tile = wmts.gettile(layer='VIIRS_CityLights_2012', tilematrixset='EPSG4326_500m', tilematrix=le_z, row=le_x, column=le_y, format="image/jpeg")
-out = open('nasa_modis_terra_truecolour.jpg', 'wb')
+# tile = wmts.gettile(layer='MODIS_Terra_CorrectedReflectance_TrueColor', tilematrixset='EPSG4326_250m', tilematrix=le_z, row=le_x, column=le_y, format="image/jpeg", time="2016-04-22")
+tile = wmts.gettile(layer='MLS_HNO3_46hPa_Day', tilematrixset='EPSG4326_2km', tilematrix=le_z, row=le_x, column=le_y, format="image/png")
+out = open('nasa_modis_terra_truecolour.png', 'wb')
 bytes_written = out.write(tile.read())
 out.close()
 

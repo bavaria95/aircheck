@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clustered Features</title>
+    <link rel="stylesheet" href="http://openlayers.org/en/v3.15.1/css/ol.css" type="text/css">
+    <script src="http://openlayers.org/en/v3.14.0/build/ol.js"></script>
+</head>
+<body>
+<div id="map" class="map"></div>
+<script>
+    var count = 20000;
+    var features = new Array(count);
+    var e = 4500000;
+    for (var i = 0; i < count; ++i) {
+        var coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
+        features[i] = new ol.Feature(new ol.geom.Point(coordinates));
+    }
+
+    var source = new ol.source.Vector({
+        features: features
+    });
+
+    var clusterSource = new ol.source.Cluster({
+        distance: 40,
+        source: source
+    });
+
+    var source3 = new ol.source.WMTS({
+        url: "//map1{a-c}.vis.earthdata.nasa.gov/wmts-geo/",
+        layer: "MODIS_Terra_CorrectedReflectance_TrueColor",
+        format: "image/jpeg",
+        matrixSet: "EPSG4326_250m",
+        service: "OGC WMTS",
+        tileGrid: new ol.tilegrid.WMTS({
+            origin: [-180, 90],
+            resolutions: [
+                0.5625,
+                0.28125,
+                0.140625,
+                0.0703125,
+                0.03515625,
+                0.017578125,
+                0.0087890625,
+                0.00439453125,
+                0.002197265625
+            ],
+            matrixIds: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            tileSize: 512
+        })
+    });
+
+    var styleCache = {};
+    var clusters = new ol.layer.Vector({
+        source: clusterSource,
+        style: function(feature) {
+            var size = feature.get('features').length;
+            var style = styleCache[size];
+            if (!style) {
+                style = new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 10,
+                        stroke: new ol.style.Stroke({
+                            color: '#fff'
+                        }),
+                        fill: new ol.style.Fill({
+                            color: '#3399CC'
+                        })
+                    }),
+                    text: new ol.style.Text({
+                        text: size.toString(),
+                        fill: new ol.style.Fill({
+                            color: '#fff'
+                        })
+                    })
+                });
+                styleCache[size] = style;
+            }
+            return style;
+        }
+    });
+
+    var raster = new ol.layer.Tile({
+//        source: new ol.source.OSM()
+        source: source3
+    });
+
+
+
+    var raster = new ol.layer.Tile({
+//        extent: [-13884991, 2870341, -7455066, 6338219],
+        source: new ol.source.TileWMS({
+            url: 'http://map1.vis.earthdata.nasa.gov/twms-geo/twms.cgi',
+            params: {'LAYERS': 'MODIS_Terra_CorrectedReflectance_TrueColor',
+                    'TILED': true,
+            'SRS':'EPSG:4326',
+            "FORMAT":"image/jpeg",
+                "STYLES":"",
+            "WIDTH":"512",
+            "HEIGHT":"512",
+            "TIME":"2013-03-02"},
+            serverType: 'geoserver'
+        })
+    })
+
+    var map = new ol.Map({
+        layers: [raster, clusters],
+        renderer: 'canvas',
+        target: 'map',
+        view: new ol.View({
+            center: [0, 0],
+            zoom: 2
+        })
+    });
+</script>
+</body>
+</html>
