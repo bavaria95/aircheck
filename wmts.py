@@ -10,7 +10,7 @@ print(wmts.identification.version)
 
 print(wmts.identification.title)
 
-print(str.strip(wmts.identification.abstract))
+#print(str.strip(wmts.identification.abstract))
 
 print(wmts.identification.keywords)
 
@@ -45,8 +45,8 @@ print(le_x, le_y)
 
 
 
-# tile = wmts.gettile(layer='MODIS_Terra_CorrectedReflectance_TrueColor', tilematrixset='EPSG4326_250m', tilematrix=le_z, row=le_x, column=le_y, format="image/jpeg", time="2016-04-22")
-tile = wmts.gettile(layer='VIIRS_CityLights_2012', tilematrixset='EPSG4326_500m', tilematrix=le_z, row=le_x, column=le_y, format="image/jpeg")
+tile = wmts.gettile(layer='MODIS_Terra_CorrectedReflectance_TrueColor', tilematrixset='EPSG4326_250m', tilematrix=le_z, row=le_x, column=le_y, format="image/jpeg", time="2016-04-22")
+#tile = wmts.gettile(layer='VIIRS_CityLights_2012', tilematrixset='EPSG4326_500m', tilematrix=le_z, row=le_x, column=le_y, format="image/jpeg")
 out = open('nasa_modis_terra_truecolour.jpg', 'wb')
 bytes_written = out.write(tile.read())
 out.close()
